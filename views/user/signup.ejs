@@ -1,0 +1,170 @@
+
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .signup-container {
+            max-width: 450px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .form-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .btn-signup {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="signup-container">
+            <h2 class="form-title">Create Account</h2>
+            <form id="signupForm" class="needs-validation" novalidate>
+                <!-- Username -->
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" required name="username"
+                           pattern="[A-Za-z0-9_]{3,}" placeholder="Enter username">
+                    <div class="invalid-feedback">
+                        Username must be at least 3 characters long
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" required
+                           placeholder="name@example.com">
+                    <div class="invalid-feedback">
+                        Please enter a valid email address
+                    </div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" required name="phone"
+                           pattern="[0-9]{10}" placeholder="Enter 10-digit phone number">
+                    <div class="invalid-feedback">
+                        Please enter a valid 10-digit phone number
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" required name="password"
+                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                           placeholder="Enter password">
+                    <div class="invalid-feedback">
+                        Password must contain at least 8 characters, including uppercase, lowercase and numbers
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" required name="confirmPassword"
+                           placeholder="Confirm password">
+                    <div class="invalid-feedback">
+                        Passwords do not match
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button class="btn btn-primary btn-signup mt-3" type="submit">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form validation
+        const form = document.getElementById('signupForm');
+        const username = document.getElementById('username')
+        const email = document.getElementById('email')
+        const phone = document.getElementById('phone')
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            // Check if passwords match
+            if (password.value !== confirmPassword.value) {
+                confirmPassword.setCustomValidity('Passwords do not match');
+            } else {
+                confirmPassword.setCustomValidity('');
+            }
+
+            form.classList.add('was-validated');
+        });
+        fetch('/signup', {
+    method: "POST",
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        username: username,
+        email: email,
+        password: password,
+        phone: phone
+    })
+})
+.then((response) => {
+    console.log("Server response:", response);
+    return response.json(); // Parses the JSON response
+})
+.then((data) => {
+    console.log("Parsed data:", data);
+    
+    if (data.status) {
+        console.log('Data success');
+        setTimeout(() => {
+            location.href = "/user/login"; // Redirect to login page
+        }, 2000);
+    }
+})
+.catch((error) => {
+    console.log("Error in fetch:", error);
+    result.style.color = "red";
+    result.innerHTML = "An error occurred. Please try again later.";
+})
+.finally(() => {
+    form.reset(); // Reset form fields
+    setTimeout(() => {
+        result.style.display = 'none';
+    }, 3000);
+});
+
+        
+        // Clear custom validity when confirm password changes
+        confirmPassword.addEventListener('input', function() {
+            if (password.value === confirmPassword.value) {
+                confirmPassword.setCustomValidity('');
+            } else {
+                confirmPassword.setCustomValidity('Passwords do not match');
+            }
+        });
+    </script>
+</body>
+</html>
