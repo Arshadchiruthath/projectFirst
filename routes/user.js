@@ -15,4 +15,11 @@ router.get('/signup',(req,res)=>{
 })
 router.post('/signup', userController.signupUser)
 
+router.post('/user/login',(req,res)=>{
+    res.render('user/userhome')
+})
+
+router.get('/user/login',(req,res)=>{
+    res.render('user/userhome')
+})
 module.exports=router

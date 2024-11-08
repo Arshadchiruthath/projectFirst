@@ -1,7 +1,14 @@
 const userSchema = require('../model/userModel')
 const signupUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        console.log('suser save');
+
+        const { username,phone,email, password } = req.body;
+        console.log(req.body);
+        
+
+        console.log(username,phone,email,password);
+        
 
         // Check if the user already exists
         const user = await userSchema.findOne({ email });
@@ -11,12 +18,14 @@ const signupUser = async (req, res) => {
 
         // If user doesn't exist, create a new one
         const newUser = new userSchema({
+            username:username,
+            phone:phone,
             email: email,
             password: password
         });
 
         await newUser.save(); // Save the new user
-
+        
         // Send success response
         res.status(200).json({ message: 'User created successfully', status: true });
         

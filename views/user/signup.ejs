@@ -33,9 +33,10 @@
 </head>
 <body>
     <div class="container">
+        <div id="result"></div>
         <div class="signup-container">
             <h2 class="form-title">Create Account</h2>
-            <form id="signupForm" class="needs-validation" novalidate>
+            <form id="signupForm" class="needs-validation">
                 <!-- Username -->
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
@@ -93,78 +94,86 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Form validation
-        const form = document.getElementById('signupForm');
-        const username = document.getElementById('username')
-        const email = document.getElementById('email')
-        const phone = document.getElementById('phone')
-        const password = document.getElementById('password');
-        const confirmPassword = document.getElementById('confirmPassword');
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Form validation
+            
+            
+            const result=document.getElementById('result')
 
-        form.addEventListener('submit', function (event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
+            const form = document.getElementById('signupForm');
+            form.addEventListener('submit', function (event) {
+                event.preventDefault()
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                const username = document.getElementById('username').value
+                const phone = document.getElementById('phone').value
+                const email = document.getElementById('email').value
+                const password = document.getElementById('password')
+                const confirmPassword = document.getElementById('confirmPassword')
+                const pass = password.value
+                console.log(form)
+                console.log("uuuu",username, email, phone, password);
 
-            // Check if passwords match
-            if (password.value !== confirmPassword.value) {
-                confirmPassword.setCustomValidity('Passwords do not match');
-            } else {
-                confirmPassword.setCustomValidity('');
-            }
+                // Check if passwords match
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity('Passwords do not match');
+                } else {
+                    confirmPassword.setCustomValidity('');
+                }
 
-            form.classList.add('was-validated');
-        });
-        fetch('/signup', {
-    method: "POST",
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        username: username,
-        email: email,
-        password: password,
-        phone: phone
+                form.classList.add('was-validated');
+            // console.log("working")
+            fetch('/user/signup', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: username,
+            phone: phone,
+            email: email,
+            password: pass
+        })
     })
-})
-.then((response) => {
-    console.log("Server response:", response);
-    return response.json(); // Parses the JSON response
-})
-.then((data) => {
-    console.log("Parsed data:", data);
-    
-    if (data.status) {
-        console.log('Data success');
-        setTimeout(() => {
-            location.href = "/user/login"; // Redirect to login page
-        }, 2000);
-    }
-})
-.catch((error) => {
-    console.log("Error in fetch:", error);
-    result.style.color = "red";
-    result.innerHTML = "An error occurred. Please try again later.";
-})
-.finally(() => {
-    form.reset(); // Reset form fields
-    setTimeout(() => {
-        result.style.display = 'none';
-    }, 3000);
-});
-
+    .then((response) => {
+        console.log("Server response:", response);
+        return response.json(); // Parses the JSON response
+    })
+    .then((data) => {
+        console.log("Parsed data:", data);
         
-        // Clear custom validity when confirm password changes
-        confirmPassword.addEventListener('input', function() {
-            if (password.value === confirmPassword.value) {
-                confirmPassword.setCustomValidity('');
-            } else {
-                confirmPassword.setCustomValidity('Passwords do not match');
-            }
+        if (data.status) {
+            console.log('Data success');
+            setTimeout(() => {
+                location.href = "/user/login"; // Redirect to login page
+            }, 2000);
+        }
+    })
+    .catch((error) => {
+        console.log("Error in fetch:", error);
+        result.style.color = "red";
+        result.innerHTML = "An error occurred. Please try again later.";
+    })
+    .finally(() => {
+        form.reset(); // Reset form fields
+        setTimeout(() => {
+            result.style.display = 'none';
+        }, 3000);
+    });
+
+            
+            // Clear custom validity when confirm password changes
+            confirmPassword.addEventListener('input', function() {
+                if (password.value === confirmPassword.value) {
+                    confirmPassword.setCustomValidity('');
+                } else {
+                    confirmPassword.setCustomValidity('Passwords do not match');
+                }
+            });
         });
-    </script>
+     </script>
 </body>
 </html>
