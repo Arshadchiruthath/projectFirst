@@ -1,14 +1,25 @@
 const express = require('express')
-const sesssion = require('express-sesssion')
+const session = require('express-session')
 const app=express()
 const userRoutes=require('./routes/user')
 const adminRoutes=require('./routes/admin')
 const path= require('path')
 const ejs = require('ejs')
 const connectDB = require('./db/connectDb')
-
+const nocache = require ('nocache')  
 
 connectDB();
+
+app.use(nocache())
+
+app.use(session({
+    secret: 'secret key',
+    resave : false,
+    saveUninitialized:true,
+    cookie:{
+        maxAge:1000*60*60*24
+    }
+    }))
 
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','ejs');
