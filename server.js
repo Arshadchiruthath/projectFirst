@@ -10,7 +10,6 @@ const nocache = require ('nocache')
 
 connectDB();
 
-app.use(nocache())
 
 app.use(session({
     secret: 'secret key',
@@ -19,7 +18,15 @@ app.use(session({
     cookie:{
         maxAge:1000*60*60*24
     }
-    }))
+}))
+
+app.use(nocache())
+
+app.use(nocache()); // Apply to all routes
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    next();
+});
 
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','ejs');
@@ -35,6 +42,6 @@ app.use('/admin',adminRoutes)
 
 
 app.listen(9001,()=>{
-    console.log('STARTED http://localhost:9001/');
+    console.log('STARTED http://localhost:9001/user/login');
     
 })

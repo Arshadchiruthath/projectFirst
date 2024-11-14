@@ -56,6 +56,7 @@ const login= async(req, res)=>{
       const{email,password} = req.body;
       
       const user= await userSchema.findOne({email})
+      
       console.log('user',user);
       
       if(!user) return res.render('user/login',{message: 'user does not exist'})
@@ -67,7 +68,7 @@ const login= async(req, res)=>{
 
             req.session.user= true;
             
-          return  res.render('user/userhome' , { message:'login successfull'})
+          return  res.render('user/userhome' ,{username : user.username})
     }
 
     catch(error){
@@ -89,6 +90,19 @@ const loadhome = (req,res) =>{
 }
 
 
+const logout = async (req,res) =>{
+
+    req.session.destroy(()=>{
+      res.redirect('/user/login')
+    })
+  
+  }
+  
+  const signupsend = async (req,res) =>{
+
+      res.redirect('/user/signup')
+  } 
 
 
-module.exports={signupUser,loadlogin,loadsignup,loadhome,login}
+
+module.exports={signupUser,loadlogin,loadsignup,loadhome,signupsend,login,logout}
