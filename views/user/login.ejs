@@ -49,13 +49,13 @@
             <form id="loginForm" action="/user/login" method="POST" class="needs-validation" novalidate>
                 <!-- Username/Email -->
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username or Email</label>
+                    <label for="username" class="form-label">Email</label>
                     <input type="text" 
                            class="form-control" 
                            id="username" 
                            name="email" 
                            required
-                           placeholder="Enter username or email"
+                           placeholder="email"
                            value="<%= locals.formData ? formData.username : '' %>">
                     <div class="invalid-feedback">
                         Please enter your username or email

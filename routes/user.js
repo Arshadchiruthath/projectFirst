@@ -17,6 +17,7 @@ router.get('/signup',userController.loadsignup)
 router.post('/signup', userController.signupUser)
 
 router.get('/userhome', auth.checkSession,userController.loadhome)
+router.get('/home', auth.checkSession,userController.loadhome)
 
 router.get('/logout', userController.logout)
 

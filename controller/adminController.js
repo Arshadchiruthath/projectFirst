@@ -1,5 +1,6 @@
 const userSchema = require('../model/userModel')
 const adminSchema = require('../model/adminModel')
+const bcrypt = require('bcrypt')
 
 //login
 
@@ -25,7 +26,7 @@ const login= async(req, res)=>{
         
         if(!isMatch) return res.render('admin/login', {message : 'incorrect password'})
 
-            req.session.user= true;
+            req.session.admin= true;
             
           return  res.redirect('/admin/adminhome' )
     }
@@ -117,7 +118,7 @@ const deleteuser = async (req,res) =>{
     // }
     // };
 
-    const edituser = async (req, res) => {
+  const edituser = async (req, res) => {
       // Extract data from req.body and req.params
       const { id } = req.params; // Assuming you are passing the user ID in the route params
       const { username, password, email, phone } = req.body;
@@ -159,6 +160,54 @@ const deleteuser = async (req,res) =>{
           res.json({ success: false, message: 'Failed to update user' });
       }
   };
+
+  const adduser = async (req, res) => {
+    try {
+      // console.log('suser save');
+      console.log("working");
+      
+
+      const { username,password,email,phone } = req.body;
+      // console.log(req.body);
+      
+
+      console.log("this now",username,password,email,phone);
+      
+
+      // Check if the user already exists
+      const user = await userSchema.findOne({ email });
+      if (user) {
+          return res.status(400).json({ message: 'User already exists', status: false });
+      }
+
+      const hashedpassword = await bcrypt.hash(password,10)
+
+      // If user doesn't exist, create a new one 
+      const newUser = new userSchema({
+          username:username,
+          password: hashedpassword,
+          email: email,
+          phone:phone
+      });
+
+      await newUser.save(); // Save the new user
+      
+      console.log("AT LAST ",username,password,email,phone);
+
+
+      // Send success response
+      res.redirect('/admin/adminhome')
+      // res.status(200).json({ message: 'User created successfully', status: true });
+      
+  } catch (error) {
+      console.log("Error:", error);
+
+      res.render('admin/adminhome' , {message : 'something went error'})
+      res.status(500).json({ message: 'An error occurred. Please try again later.', status: false });
+  }
+
+};
+
 
 
 
@@ -203,4 +252,4 @@ const searchuser = async (req, res) => {
 };
 
 
-module.exports={login,adminloadlogin,adminloadhome,logout,deleteuser,edituser,searchuser}
+module.exports={login,adminloadlogin,adduser,adminloadhome,logout,deleteuser,edituser,searchuser}

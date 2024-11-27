@@ -8,13 +8,15 @@ router.get('/login', auth.isloginadmin,adminController.adminloadlogin)
  
 router.post('/login', adminController.login)
 
- router.get('/adminhome', adminController.adminloadhome)
+ router.get('/adminhome', auth.checkSessionadmin,adminController.adminloadhome)
 
 router.get('/logout', adminController.logout)
 
 router.post('/logout', adminController.logout)
 
 router.post('/edit-user/:id', adminController.edituser)
+
+router.post('/add-user', adminController.adduser)
 
 // router.get('/admin/delete-user/', adminController.deleteuser)
 
